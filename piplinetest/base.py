@@ -26,7 +26,9 @@ class BaseTestStep(BaseModel):
     headers: Union[dict, None] = Field(title="http header", default=None)
     body: Union[dict, str, list, None] = Field(title="http body", default={})
 
-    process_methods_prefix: str = Field(title="process method import prefix", default=None)
+    process_methods_prefix: str = Field(
+        title="process method import prefix", default=None
+    )
     pre_process_method: Union[str, None] = Field(
         title="process method call before send http", default=None
     )
@@ -43,7 +45,7 @@ class BaseTestStep(BaseModel):
         if isinstance(self.body, (dict, list)):
             request_kwargs["json"] = self.body
         elif isinstance(self.body, str):
-            request_kwargs["body"] = self.body
+            request_kwargs["data"] = self.body
         else:
             pass
 
@@ -59,15 +61,16 @@ class BaseTestStep(BaseModel):
         res = self._send_request_data(request_dict)
 
         if self.after_process_method is not None:
-            after_process_method = import_lib(self.after_process_method)
+            after_process_method = import_lib(
+                self.process_methods_prefix + self.after_process_method
+            )
             self.body = after_process_method(res.json())
         else:
             self.body = res.json()
 
 
 class BasePipLineTest(BaseModel):
-    """base test class
-    """
+    """base test class"""
 
     name: str = Field(title="test name", default=None)
     host: str = Field(title="http host")
