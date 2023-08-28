@@ -1,0 +1,248 @@
+{
+    "config_workflow": [
+        {
+            "case_type": "routine",
+            "pathology_number": "S202308032",
+            "molecular_number": "",
+            "advice_type": "HE",
+            "target_type": "specimen",
+            "library_id": 2,
+            "library_detail_id": 1,
+            "library_detail": {
+                "value": "2-1",
+                "id": 1,
+                "label": "胸科病理(肺,食管)",
+                "name": "胸科病理(肺,食管)",
+                "tumor_grade": {
+                    "is_show": "0"
+                },
+                "timeout_id": 2,
+                "register_template_id": 3,
+                "case_type": "routine",
+                "target_type": "specimen",
+                "advice_type": "HE",
+                "enter_type": "register",
+                "pathology_number": {
+                    "id": 39,
+                    "name": "其他病理",
+                    "prefix": "S",
+                    "digit": 3,
+                    "symbol": null,
+                    "today": null
+                },
+                "parent_library_id": 1,
+                "library_id": 2,
+                "parent_id": 2,
+                "pathology_number_type": 0,
+                "is_after_frozen": 0
+            }
+        }
+    ],
+    "caseinfo": {
+        "patient_name": "test",
+        "gender": "male",
+        "id_number": "",
+        "papers_type": "id_card",
+        "nation": "汉族",
+        "phone": "18571754078",
+        "origin": "杭州"
+    },
+    "pathology": {
+        "age": 22,
+        "age_unit": "year",
+        "is_married": "married",
+        "expedite_status": "default",
+        "career": "程序员",
+        "inspection_hospital": 1,
+        "inspection_department": 3,
+        "inspection_doctor": 5,
+        "exhospital_name": "",
+        "treat_type": "clinic",
+        "inspection_date": "2023-08-28 14:49:50",
+        "outpatient_number": "0111",
+        "anamnesis_no": "111",
+        "admission_number": "",
+        "bed_number": "1",
+        "money_type": "自费",
+        "money": "200",
+        "secret": "ordinary",
+        "library_id": 2,
+        "is_exhospital": 0,
+        "print_deliver_status": 0,
+        "clinical_diagnosis": "临床诊断",
+        "medical_history": "病史摘要",
+        "generally_seen": "临床病史",
+        "relative_inspection": "手术所见",
+        "other_tests": "其他检查",
+        "receive_at": "2023-08-28 14:50:30",
+        "receive_id": 1,
+        "library_detail_id": 1,
+        "target_type": "specimen",
+        "advice_type": "HE",
+        "cell_info": {
+            "cell_routine": {
+                "big_small": "",
+                "texture": "",
+                "boundary": "",
+                "activity": "",
+                "evaluation_inspection": "",
+                "penetrant": ""
+            },
+            "cell_cervical": {
+                "option": [
+                    {
+                        "name": "常规宫颈筛选",
+                        "checked": false,
+                        "id": 1,
+                        "children": [
+                            {
+                                "name": "普通",
+                                "checked": false,
+                                "pId": 1,
+                                "id": 10
+                            },
+                            {
+                                "name": "怀孕",
+                                "checked": false,
+                                "pId": 1,
+                                "id": 11
+                            },
+                            {
+                                "name": "产后",
+                                "checked": false,
+                                "pId": 1,
+                                "id": 12
+                            },
+                            {
+                                "name": "宫内节育器",
+                                "checked": false,
+                                "pId": 1,
+                                "id": 13
+                            },
+                            {
+                                "name": "绝经后",
+                                "checked": false,
+                                "pId": 1,
+                                "id": 14
+                            }
+                        ]
+                    },
+                    {
+                        "name": "异常情况检查",
+                        "checked": false,
+                        "id": 2,
+                        "children": [
+                            {
+                                "name": "接触性出血",
+                                "checked": false,
+                                "pId": 2,
+                                "id": 15
+                            },
+                            {
+                                "name": "无诱因出血",
+                                "checked": false,
+                                "pId": 2,
+                                "id": 16
+                            },
+                            {
+                                "name": "HPV阳性",
+                                "checked": false,
+                                "pId": 2,
+                                "id": 17
+                            },
+                            {
+                                "name": "自觉不适",
+                                "checked": false,
+                                "pId": 2,
+                                "id": 18
+                            }
+                        ]
+                    },
+                    {
+                        "name": "治疗后复查",
+                        "checked": false,
+                        "id": 3,
+                        "children": [
+                            {
+                                "name": "宫颈活检术后",
+                                "checked": false,
+                                "pId": 3,
+                                "id": 19
+                            },
+                            {
+                                "name": "LEEP术后",
+                                "checked": false,
+                                "pId": 3,
+                                "id": 20
+                            },
+                            {
+                                "name": "子宫切除术后",
+                                "checked": false,
+                                "pId": 3,
+                                "id": 21
+                            },
+                            {
+                                "name": "卵巢切除术后",
+                                "checked": false,
+                                "pId": 3,
+                                "id": 22
+                            },
+                            {
+                                "name": "放疗后",
+                                "checked": false,
+                                "pId": 3,
+                                "remark": "",
+                                "id": 23
+                            },
+                            {
+                                "name": "化疗后",
+                                "checked": false,
+                                "pId": 3,
+                                "remark": "",
+                                "id": 24
+                            }
+                        ]
+                    },
+                    {
+                        "name": "其他",
+                        "id": 4,
+                        "checked": false,
+                        "children": [
+                            {
+                                "name": "",
+                                "pId": 4,
+                                "remark": "",
+                                "id": 25
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "tct_message": {},
+        "autopsy": {},
+        "tumor_info": {},
+        "gynecology_info": {},
+        "puncture_info": {}
+    },
+    "specimen": [
+        {
+            "fixed_at": "2023-08-28 14:50:10",
+            "leave_body_at": "2023-08-28 14:50:09",
+            "specimen_fixed": "10%中性缓冲福尔马林",
+            "specimen_type": "小标本",
+            "infectious_specimen": "no",
+            "infectious_specimen_desc": "",
+            "part": "左侧",
+            "specimen_name": "测试标本",
+            "specimen_number": 1,
+            "reject_status": 0,
+            "status": "default",
+            "amount": 1,
+            "evaluate_id": "",
+            "evaluate_detail_id": "",
+            "fixed_evaluation_id": "",
+            "nonstandard": []
+        }
+    ]
+}

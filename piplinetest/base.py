@@ -1,5 +1,7 @@
 from typing import Union, List, Any
 from enum import Enum
+from pathlib import Path
+from json import load
 
 from pydantic import BaseModel, Field
 from requests import Response
@@ -24,8 +26,9 @@ class BaseTestStep(BaseModel):
     url: str = Field(title="http api url")
     method: str = Field(title="http method like: GET|POST|PATCH")
     headers: Union[dict, None] = Field(title="http header", default=None)
-    body: Union[dict, str, list, None] = Field(title="http body", default={})
+    body: Union[dict, str, None] = Field(title="http body", default={})
 
+    process_methods_prefix_split_char: str = Field(default=".")
     process_methods_prefix: str = Field(
         title="process method import prefix", default=None
     )
@@ -36,12 +39,28 @@ class BaseTestStep(BaseModel):
         title="process method call after send http", default=None
     )
 
-    def _send_request_data(self, request_dict: Union[dict, None]) -> Response:
+    def _read_http_body(self):
+        if isinstance(self.body, str):
+            with open(
+                "/".join(
+                    self.process_methods_prefix.split(
+                        self.process_methods_prefix_split_char
+                    )
+                )
+                + self.body,
+                self.body,
+            ) as f:
+                self.body = load(f)
+        else:
+            pass
+
+    def _send_request_data(self, request_dict: dict) -> Response:
         request_kwargs = {
             "http_url": request_dict["host"] + self.url,
             "method": self.method if self.method else None,
             "headers": self.headers,
         }
+        self._read_http_body()
         if isinstance(self.body, (dict, list)):
             request_kwargs["json"] = self.body
         elif isinstance(self.body, str):
@@ -51,7 +70,7 @@ class BaseTestStep(BaseModel):
 
         return http_request(**request_kwargs)
 
-    def execute(self, request_dict: Union[dict, None]):
+    def execute(self, request_dict: dict):
         if self.pre_process_method is not None:
             pre_process_method = import_lib(
                 self.process_methods_prefix + self.pre_process_method
