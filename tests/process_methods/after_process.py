@@ -2,30 +2,30 @@ from piplinetest import BasePipLineTest, BaseTestStep
 
 
 def process_nothing(
-    piplinetest: BasePipLineTest, test_step: BaseTestStep, http_res_dict: dict
+    test_class: BasePipLineTest, test_step: BaseTestStep, http_res_dict: dict
 ):
     """_summary_
 
     Args:
-        piplinetest (BasePipLineTest): piplinetest
+        test_class (BasePipLineTest): test_class
         test_step (BaseTestStep): test_step
         http_res_dict (dict): http res json dict
 
     Returns:
         _type_: _description_
     """
-    print(piplinetest.dict())
+    print(test_class.dict())
     print(test_step.dict())
     return ""
 
 
 def add_something_to_test_step_header(
-    piplinetest: BasePipLineTest, test_step: BaseTestStep, http_res_dict: dict
+    test_class: BasePipLineTest, test_step: BaseTestStep, http_res_dict: dict
 ):
     """_summary_
 
     Args:
-        piplinetest (BasePipLineTest): piplinetest
+        test_class (BasePipLineTest): test_class
         test_step (BaseTestStep): test_step
         http_res_dict (dict): http res json dict
 
@@ -37,12 +37,12 @@ def add_something_to_test_step_header(
 
 
 def add_http_token_to_headers(
-    piplinetest: BasePipLineTest, test_step: BaseTestStep, http_res_dict: dict
+    test_class: BasePipLineTest, test_step: BaseTestStep, http_res_dict: dict
 ):
     """_summary_
 
     Args:
-        piplinetest (BasePipLineTest): piplinetest
+        test_class (BasePipLineTest): test_class
         test_step (BaseTestStep): test_step
         http_res_dict (dict): http res json dict
 

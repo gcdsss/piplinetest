@@ -80,7 +80,7 @@ class BaseTestStep(BaseModel):
             )
             if self.body_template_json_path:
                 self._read_http_body()
-            pre_process_method(piplinetest=cls, test_step=self)
+            pre_process_method(test_class=cls, test_step=self)
 
         res = self._send_request_data(cls)
 
@@ -89,7 +89,7 @@ class BaseTestStep(BaseModel):
                 self.process_methods_prefix + self.after_process_method
             )
             after_process_method(
-                piplinetest=cls,
+                test_class=cls,
                 test_step=self,
                 http_res_dict=res.json(),
             )
@@ -115,9 +115,19 @@ class BasePipLineTest(BaseModel):
         params = http_params
         # init_dict.pop("test_steps_list")
         for x in self.test_steps_list:
-            per_test_step = x(headers=headers, body=body, params=params)
-            per_test_step.execute(self)
-            headers = per_test_step.headers
-            body = per_test_step.body
-            params = per_test_step.params
-            self.test_steps_instance_list.append(per_test_step)
+            if issubclass(x, BasePipLineTest):
+                pipline_test = x(host=self.host)
+                pipline_test.execute(
+                    http_headers=headers, http_body=body, http_params=params
+                )
+            elif issubclass(x, BaseTestStep):
+                per_test_step = x(headers=headers, body=body, params=params)
+                per_test_step.execute(self)
+                headers = per_test_step.headers
+                body = per_test_step.body
+                params = per_test_step.params
+                self.test_steps_instance_list.append(per_test_step)
+            else:
+                raise TypeError(
+                    "test_steps_list item must be instance of BasePipLineTest|BasePipLineTest!"
+                )

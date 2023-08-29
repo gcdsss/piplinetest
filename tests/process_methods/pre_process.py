@@ -1,7 +1,9 @@
 from piplinetest import BasePipLineTest, BaseTestStep
 
 
-def process_nothing(piplinetest: BasePipLineTest, test_step: BaseTestStep):
+def process_nothing(
+    test_class: BasePipLineTest, test_step: BaseTestStep, http_res_dict: dict = {}
+):
     """_summary_
 
     Args:
@@ -11,12 +13,14 @@ def process_nothing(piplinetest: BasePipLineTest, test_step: BaseTestStep):
     Returns:
         _type_: _description_
     """
-    print(piplinetest)
+    print(test_class)
     print(test_step)
     return ""
 
 
-def modify_body(piplinetest: BasePipLineTest, test_step: BaseTestStep):
+def modify_body(
+    test_class: BasePipLineTest, test_step: BaseTestStep, http_res_dict: dict = {}
+):
     """_summary_
 
     Args:
@@ -29,6 +33,8 @@ def modify_body(piplinetest: BasePipLineTest, test_step: BaseTestStep):
     test_step.body["test"] = 1
 
 
-def send_http_token(piplinetest: BasePipLineTest, test_step: BaseTestStep):
-    test_step.body["username"] = piplinetest.username
-    test_step.body["password"] = piplinetest.password
+def send_http_token(
+    test_class: BasePipLineTest, test_step: BaseTestStep, http_res_dict: dict = {}
+):
+    test_step.body["username"] = test_class.username
+    test_step.body["password"] = test_class.password

@@ -3,6 +3,6 @@ from typing import Type
 from piplinetest import BaseTestStep, BasePipLineTest
 
 
-TestStep = Type(BaseTestStep)
+TestStep = Type[BaseTestStep]
 
-PipLineTest = Type(BasePipLineTest)
+PipLineTest = Type[BasePipLineTest]
