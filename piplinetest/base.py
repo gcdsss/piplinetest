@@ -28,7 +28,7 @@ class BaseTestStep(BaseModel):
     body_template_json_path: Union[str, None] = Field(
         title="if given, replace body with file path content", default=None
     )
-    body: Union[dict, str, None] = Field(title="http body", default={})
+    body: Union[dict, str] = Field(title="http body", default={})
 
     process_methods_prefix_split_char: str = Field(default=".")
     process_methods_prefix: str = Field(
@@ -86,7 +86,7 @@ class BaseTestStep(BaseModel):
             after_process_method = import_lib(
                 self.process_methods_prefix + self.after_process_method
             )
-            self.body = after_process_method(
+            after_process_method(
                 piplinetest=cls,
                 test_step=self,
                 http_res_dict=res.json(),
