@@ -59,3 +59,25 @@ class TestPreProcessMethod(object):
         t = HttpPiplineTest(host="http://127.0.0.1:5001")
         t.execute()
         assert t.test_steps_instance_list[0].headers["test"] == 1
+
+    def test_after_process_get_http_token(self):
+        class HttpTestStep(BaseTestStep):
+            description: str = "test"
+            url: str = "/api/login"
+            method: str = "POST"
+            headers: dict = {}
+            process_methods_prefix = "tests.process_methods."
+            pre_process_method = "pre_process:send_http_token"
+            after_process_method = "after_process:add_http_token_to_headers"
+
+        class HttpPiplineTest(BasePipLineTest):
+            username: str = "gui"
+            password: str = "guichangdi"
+            description: str = "test"
+            test_steps_list: List[HttpTestStep] = [
+                HttpTestStep,
+            ]
+
+        t = HttpPiplineTest(host="http://127.0.0.1:5001")
+        t.execute()
+        assert t.test_steps_instance_list[0].headers["Authorization"]

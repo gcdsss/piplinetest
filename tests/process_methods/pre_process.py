@@ -27,3 +27,8 @@ def modify_body(piplinetest: BasePipLineTest, test_step: BaseTestStep):
         _type_: _description_
     """
     test_step.body["test"] = 1
+
+
+def send_http_token(piplinetest: BasePipLineTest, test_step: BaseTestStep):
+    test_step.body["username"] = piplinetest.username
+    test_step.body["password"] = piplinetest.password
