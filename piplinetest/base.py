@@ -25,6 +25,7 @@ class BaseTestStep(BaseModel):
     url: str = Field(title="http api url")
     method: str = Field(title="http method like: GET|POST|PATCH")
     headers: Union[dict, None] = Field(title="http header", default=None)
+    params: Union[dict, None] = Field(title="http parameter", default=None)
     body_template_json_path: Union[str, None] = Field(
         title="if given, replace body with file path content", default=None
     )
@@ -61,6 +62,7 @@ class BaseTestStep(BaseModel):
             "http_url": cls.host + self.url,
             "method": self.method if self.method else None,
             "headers": self.headers,
+            "params": self.params,
         }
         if isinstance(self.body, (dict, list)):
             request_kwargs["json"] = self.body
@@ -103,17 +105,19 @@ class BasePipLineTest(BaseModel):
     total_execute_round: int = Field(title="total execute round", default=1)
     test_arguments: Union[dict, None] = Field(title="execute arguments", default=None)
     test_steps_list: List[Any] = Field(title="test step lists to execute", default=[])
-    test_steps_instance_list: List[Any] = Field(
+    test_steps_instance_list: List[BaseTestStep] = Field(
         title="test step instance list", default=[]
     )
 
-    def execute(self, http_headers={}, http_body={}):
+    def execute(self, http_headers={}, http_body={}, http_params={}):
         headers = http_headers
         body = http_body
+        params = http_params
         # init_dict.pop("test_steps_list")
         for x in self.test_steps_list:
-            per_test_step = x(headers=headers, body=body)
+            per_test_step = x(headers=headers, body=body, params=params)
             per_test_step.execute(self)
             headers = per_test_step.headers
             body = per_test_step.body
+            params = per_test_step.params
             self.test_steps_instance_list.append(per_test_step)
