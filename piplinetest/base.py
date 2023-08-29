@@ -24,8 +24,8 @@ class BaseTestStep(BaseModel):
     name: str = Field(title="test step name", default=None)
     url: str = Field(title="http api url")
     method: str = Field(title="http method like: GET|POST|PATCH")
-    headers: Union[dict, None] = Field(title="http header", default=None)
-    params: Union[dict, None] = Field(title="http parameter", default=None)
+    headers: dict = Field(title="http header", default={})
+    params: dict = Field(title="http parameter", default={})
     body_template_json_path: Union[str, None] = Field(
         title="if given, replace body with file path content", default=None
     )
