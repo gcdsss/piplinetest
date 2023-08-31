@@ -13,6 +13,15 @@
       "justMyCode": true,
       "cwd": "${workspaceFolder}",
       "env": { "PYTHONPATH": "${workspaceFolder}" }
+    },
+    {
+      "name": "Python: Pytest",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["-vv", "-s", "tests"],
+      "console": "integratedTerminal",
+      "justMyCode": false
     }
   ]
 }
