@@ -1,3 +1,4 @@
+import re
 from typing import Union, List, Any
 from enum import Enum
 from json import load
@@ -20,6 +21,8 @@ class BaseTestStep(BaseModel):
     Args:
         BaseModel (_type_): every http test step
     """
+
+    url_format_pattern: str = r"{(.*?)}"
 
     name: str = Field(title="test step name", default=None)
     url: str = Field(title="http api url")
@@ -56,6 +59,13 @@ class BaseTestStep(BaseModel):
                 self.body = load(f)
         else:
             pass
+
+    def _format_url(self, cls: "BasePipLineTest"):
+        url_formats = re.findall(self.url_format_pattern, self.url)
+        if url_formats:
+            for x in url_formats:
+                attr_value = getattr(cls, x)
+                self.url = self.url.replace("{" + x + "}", str(attr_value))
 
     def _send_request_data(self, cls: "BasePipLineTest") -> Response:
         request_kwargs = {
@@ -109,7 +119,10 @@ class BasePipLineTest(BaseModel):
         title="test step instance list", default=[]
     )
 
-    def execute(self, http_headers={}, http_body={}, http_params={}):
+    def add_test_step(self, step: BaseTestStep):
+        self.test_steps_list.append(step)
+
+    def _execute(self, http_headers={}, http_body={}, http_params={}):
         headers = http_headers
         body = http_body
         params = http_params
@@ -131,3 +144,10 @@ class BasePipLineTest(BaseModel):
                 raise TypeError(
                     "test_steps_list item must be instance of BasePipLineTest|BasePipLineTest!"
                 )
+
+    def execute(self, http_headers={}, http_body={}, http_params={}):
+        headers = http_headers
+        body = http_body
+        params = http_params
+        for _ in range(self.total_execute_round):
+            self._execute(headers, body, params)
