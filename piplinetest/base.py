@@ -96,6 +96,7 @@ class BaseTestStep(BaseModel):
         try:
             res = http_request(**request_kwargs)
             res.raise_for_status()
+            return res
         except Exception as e:
             self._exception_handle(e, res)
 
