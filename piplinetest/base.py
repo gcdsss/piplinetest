@@ -1,4 +1,5 @@
 import re
+import traceback
 from typing import Union, List, Any
 from enum import Enum
 from json import load
@@ -44,6 +45,16 @@ class BaseTestStep(BaseModel):
     after_process_method: Union[str, None] = Field(
         title="process method call after send http", default=None
     )
+    fail_msg: str = Field(title="error", default=None)
+    fail_traceback: str = Field(title="traceback", default=None)
+
+    def _exception_handle(self, e: Exception, res: Union[Response, None]):
+        self.fail_traceback = traceback.format_exc()
+        if res:
+            self.fail_msg = res.text
+        else:
+            self.fail_msg = e.__str__()
+        raise e
 
     def _read_http_body(self):
         if self.body_template_json_path:
@@ -81,7 +92,12 @@ class BaseTestStep(BaseModel):
         else:
             pass
 
-        return http_request(**request_kwargs)
+        res = None
+        try:
+            res = http_request(**request_kwargs)
+            res.raise_for_status()
+        except Exception as e:
+            self._exception_handle(e, res)
 
     def execute(self, cls: "BasePipLineTest"):
         if self.pre_process_method is not None:
