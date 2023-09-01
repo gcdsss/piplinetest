@@ -92,6 +92,7 @@ class BaseTestStep(BaseModel):
                 self._read_http_body()
             pre_process_method(test_class=cls, test_step=self)
 
+        self._format_url(cls)
         res = self._send_request_data(cls)
 
         if self.after_process_method is not None:
