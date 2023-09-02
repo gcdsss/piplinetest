@@ -153,11 +153,15 @@ class BasePipLineTest(BaseModel):
                 )
             elif issubclass(x, BaseTestStep):
                 per_test_step = x(headers=headers, body=body, params=params)
-                per_test_step.execute(self)
+                try:
+                    per_test_step.execute(self)
+                except Exception as e:
+                    raise e
+                finally:
+                    self.test_steps_instance_list.append(per_test_step)
                 headers = per_test_step.headers
                 body = per_test_step.body
                 params = per_test_step.params
-                self.test_steps_instance_list.append(per_test_step)
             else:
                 raise TypeError(
                     "test_steps_list item must be instance of BasePipLineTest|BasePipLineTest!"

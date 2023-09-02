@@ -47,7 +47,7 @@ class TestPiplineTest(object):
         assert t.test_steps_instance_list[0].body
         print(t.test_steps_instance_list[0].body)
 
-    def test_piplien_test_total_test_round(self):
+    def test_pipline_test_total_test_round(self):
         class HttpTestStep(BaseTestStep):
             description: str = "test"
             url: str = "/api/test"
@@ -66,3 +66,24 @@ class TestPiplineTest(object):
         t = HttpPiplineTest(name="test", host="http://127.0.0.1:5001")
         t.execute()
         assert len(t.test_steps_instance_list) == 2
+
+    def test_pipline_test_with_exception(self):
+        class TestStep(BaseTestStep):
+            url = "/api/test1"
+            method = "POST"
+
+        class HttpPiplineTest(BasePipLineTest):
+            description: str = "test"
+            test_steps_list: List[TestStep] = [
+                TestStep,
+            ]
+
+        t = TestStep()
+        p = HttpPiplineTest(host="http://127.0.0.1:5001")
+        try:
+            p.execute()
+        except Exception as e:
+            pass
+
+        assert p.test_steps_instance_list[0].fail_msg
+        print(p.test_steps_instance_list[0].fail_msg)
