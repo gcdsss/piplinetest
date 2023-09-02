@@ -7,4 +7,4 @@ TestStep = Type[BaseTestStep]
 
 PipLineTest = Type[BasePipLineTest]
 
-Http_Res = Type[Union[dict, str]]
+Http_Res = Union[dict, str]
