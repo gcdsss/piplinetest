@@ -1,5 +1,6 @@
 import re
 import traceback
+from logging import getLogger, Logger
 from typing import Union, List, Any
 from enum import Enum
 from json import load
@@ -116,7 +117,8 @@ class BaseTestStep(BaseModel):
             self._exception_handle(e, res)
 
     def execute(self, cls: "BasePipLineTest"):
-        logger.debug(self.dict())
+        # use cls logger
+        cls.getLogger().debug(self.dict())
         if self.pre_process_method is not None:
             pre_process_method = import_lib(
                 self.process_methods_prefix + self.pre_process_method
@@ -152,6 +154,10 @@ class BasePipLineTest(BaseModel):
     test_steps_instance_list: List[BaseTestStep] = Field(
         title="test step instance list", default=[]
     )
+    logger_name: str = Field(title="logger name", default="piplinetest")
+
+    def getLogger(self) -> Logger:
+        return getLogger(self.logger_name)
 
     def add_test_step(self, step: BaseTestStep):
         self.test_steps_list.append(step)
@@ -187,6 +193,6 @@ class BasePipLineTest(BaseModel):
         headers = http_headers
         body = http_body
         params = http_params
-        logger.debug(self.dict())
+        self.getLogger().debug(self.dict())
         for _ in range(self.total_execute_round):
             self._execute(headers, body, params)

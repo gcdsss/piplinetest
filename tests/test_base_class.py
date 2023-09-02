@@ -87,3 +87,18 @@ class TestPiplineTest(object):
 
         assert p.test_steps_instance_list[0].fail_msg
         print(p.test_steps_instance_list[0].fail_msg)
+
+    def test_pipline_test_with_logger(self):
+        class TestStep(BaseTestStep):
+            url = "/api/test"
+            method = "POST"
+
+        class HttpPiplineTest(BasePipLineTest):
+            description: str = "test"
+            test_steps_list: List[TestStep] = [
+                TestStep,
+            ]
+
+        t = TestStep()
+        p = HttpPiplineTest(host="http://127.0.0.1:5001")
+        p.execute()
