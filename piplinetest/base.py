@@ -75,6 +75,8 @@ class BaseTestStep(BaseModel):
         content_type = http_res.headers.get("Content-Type", "")
         if content_type == "application/json":
             return http_res.json()
+        elif content_type == "application/pdf":
+            return ""
         else:
             return http_res.text
 
@@ -114,7 +116,7 @@ class BaseTestStep(BaseModel):
             )
             if self.body_template_json_path:
                 self._read_http_body()
-            pre_process_method(test_class=cls, test_step=self)
+            pre_process_method(test_class=cls, test_step=self, http_res_dict={})
 
         self._format_url(cls)
         res = self._send_request_data(cls)
