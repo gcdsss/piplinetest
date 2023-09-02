@@ -40,3 +40,20 @@ class TestStep(object):
         except Exception as e:
             pass
             assert t.fail_msg == e.__str__()
+
+    def test_step_with_http_res(self):
+        class TestStep(BaseTestStep):
+            url = "/api/raw_test_text"
+            method = "POST"
+
+        class HttpPiplineTest(BasePipLineTest):
+            description: str = "test"
+            test_steps_list: List[TestStep] = [
+                TestStep,
+            ]
+
+        t = TestStep()
+        t.body = {"test": 1}
+        p = HttpPiplineTest(host="http://127.0.0.1:5001")
+        t.execute(p)
+        assert isinstance(t.body, str)

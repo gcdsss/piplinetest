@@ -71,6 +71,13 @@ class BaseTestStep(BaseModel):
         else:
             pass
 
+    def _process_http_res(self, http_res: Response) -> Union[dict, str]:
+        content_type = http_res.headers.get("Content-Type", "")
+        if content_type == "application/json":
+            return http_res.json()
+        else:
+            return http_res.text
+
     def _format_url(self, cls: "BasePipLineTest"):
         url_formats = re.findall(self.url_format_pattern, self.url)
         if url_formats:
@@ -119,10 +126,10 @@ class BaseTestStep(BaseModel):
             after_process_method(
                 test_class=cls,
                 test_step=self,
-                http_res_dict=res.json(),
+                http_res_dict=self._process_http_res(res),
             )
         else:
-            self.body = res.json()
+            self.body = self._process_http_res(res)
 
 
 class BasePipLineTest(BaseModel):
