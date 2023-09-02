@@ -72,6 +72,8 @@ class BaseTestStep(BaseModel):
             pass
 
     def _process_http_res(self, http_res: Response) -> Union[dict, str]:
+        if http_res.status_code == 204:
+            return ""
         content_type = http_res.headers.get("Content-Type", "")
         if content_type == "application/json":
             return http_res.json()
