@@ -9,6 +9,10 @@ from requests import Response
 
 from .import_utils import import_lib
 from .http_request import http_request
+from .log import setup_logger
+
+
+logger = setup_logger()
 
 
 class TestStepTypeEnum(Enum):
@@ -112,6 +116,7 @@ class BaseTestStep(BaseModel):
             self._exception_handle(e, res)
 
     def execute(self, cls: "BasePipLineTest"):
+        logger.debug(self.dict())
         if self.pre_process_method is not None:
             pre_process_method = import_lib(
                 self.process_methods_prefix + self.pre_process_method
@@ -182,5 +187,6 @@ class BasePipLineTest(BaseModel):
         headers = http_headers
         body = http_body
         params = http_params
+        logger.debug(self.dict())
         for _ in range(self.total_execute_round):
             self._execute(headers, body, params)
