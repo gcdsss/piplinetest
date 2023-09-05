@@ -71,6 +71,7 @@ class BaseTestStep(BaseModel):
                 )
                 + self.body_template_json_path,
                 "r",
+                encoding="utf-8",
             ) as f:
                 self.body = load(f)
         else:
@@ -193,6 +194,6 @@ class BasePipLineTest(BaseModel):
         headers = http_headers
         body = http_body
         params = http_params
-        self.getLogger().debug(self.dict())
         for _ in range(self.total_execute_round):
             self._execute(headers, body, params)
+        self.getLogger().debug(self.dict())
