@@ -119,7 +119,7 @@ class BaseTestStep(BaseModel):
 
     def execute(self, cls: "BasePipLineTest"):
         # use cls logger
-        cls.getLogger().debug(self.dict())
+        # cls.getLogger().debug(self.dict())
         if self.pre_process_method is not None:
             pre_process_method = import_lib(
                 self.process_methods_prefix + self.pre_process_method
@@ -196,4 +196,4 @@ class BasePipLineTest(BaseModel):
         params = http_params
         for _ in range(self.total_execute_round):
             self._execute(headers, body, params)
-        self.getLogger().debug(self.dict())
+        # self.getLogger().debug(self.dict())
