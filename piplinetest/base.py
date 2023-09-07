@@ -39,6 +39,9 @@ class BaseTestStep(BaseModel):
         title="if given, replace body with file path content", default=None
     )
     body: Union[dict, str] = Field(title="http body", default={})
+    elapsed_milliseconds: float = Field(
+        title="http request elapsed milliseconds", default=None
+    )
 
     process_methods_prefix_split_char: str = Field(default=".")
     process_methods_prefix: str = Field(
@@ -113,6 +116,7 @@ class BaseTestStep(BaseModel):
         try:
             res = http_request(**request_kwargs)
             res.raise_for_status()
+            self.elapsed_milliseconds = res.elapsed.microseconds // 1000
             return res
         except Exception as e:
             self._exception_handle(e, res)

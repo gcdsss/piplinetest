@@ -88,7 +88,7 @@ class TestPiplineTest(object):
         assert p.test_steps_instance_list[0].fail_msg
         print(p.test_steps_instance_list[0].fail_msg)
 
-    def test_pipline_test_with_logger(self):
+    def test_pipline_test_get_elapsed(self):
         class TestStep(BaseTestStep):
             url = "/api/test"
             method = "POST"
@@ -99,6 +99,6 @@ class TestPiplineTest(object):
                 TestStep,
             ]
 
-        t = TestStep()
         p = HttpPiplineTest(host="http://127.0.0.1:5001")
         p.execute()
+        assert p.test_steps_instance_list[0].elapsed_milliseconds
