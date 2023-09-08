@@ -38,6 +38,7 @@ class BaseTestStep(BaseModel):
     method: str = Field(title="http method like: GET|POST|PATCH")
     headers: dict = Field(title="http header", default={})
     params: dict = Field(title="http parameter", default={})
+    timeout: int = Field(title="http request timeout", default=5)
     body_template_json_path: Union[str, None] = Field(
         title="if given, replace body with file path content", default=None
     )
@@ -107,6 +108,7 @@ class BaseTestStep(BaseModel):
             "method": self.method if self.method else None,
             "headers": self.headers,
             "params": self.params,
+            "timeout": self.timeout,
         }
         if isinstance(self.body, (dict, list)):
             request_kwargs["json"] = self.body
