@@ -1,9 +1,12 @@
 import re
 import traceback
+import csv
+import time
 from logging import getLogger, Logger
 from typing import Union, List, Any
 from enum import Enum
 from json import load
+from pathlib import Path
 
 from pydantic import BaseModel, Field
 from requests import Response
@@ -159,7 +162,33 @@ class BasePipLineTest(BaseModel):
     test_steps_instance_list: List[BaseTestStep] = Field(
         title="test step instance list", default=[]
     )
+    sleep_seconds_every_test_step: int = Field(
+        title="second sleep every test step", default=None
+    )
+    datas_csv_title_attribute: list = Field(
+        title="csv attribute title for collect test step statistic data",
+        default=[
+            "url",
+            "method",
+            "elapsed_milliseconds",
+        ],
+    )
     logger_name: str = Field(title="logger name", default="piplinetest")
+
+    def _sleep_every_test_step(self):
+        if self.sleep_seconds_every_test_step:
+            time.sleep(self.sleep_seconds_every_test_step)
+
+    def write_test_steps_http_statics_data(self, file_path: Path):
+        result = []
+        data = []
+        with open(file_path, "a+", encoding="utf-8") as f:
+            for x in self.test_steps_instance_list:
+                data = [getattr(x, x1) for x1 in self.datas_csv_title_attribute]
+
+                result.append(data)
+            writer = csv.writer(f)
+            writer.writerows(result)
 
     def getLogger(self) -> Logger:
         return getLogger(self.logger_name)
@@ -189,6 +218,7 @@ class BasePipLineTest(BaseModel):
                 headers = per_test_step.headers
                 body = per_test_step.body
                 params = per_test_step.params
+                self._sleep_every_test_step()
             else:
                 raise TypeError(
                     "test_steps_list item must be instance of BasePipLineTest|BasePipLineTest!"
