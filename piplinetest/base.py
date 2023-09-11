@@ -36,13 +36,13 @@ class BaseTestStep(BaseModel):
     name: str = Field(title="test step name", default=None)
     url: str = Field(title="http api url")
     method: str = Field(title="http method like: GET|POST|PATCH")
-    headers: dict = Field(title="http header", default={})
-    params: dict = Field(title="http parameter", default={})
+    headers: Union[dict, None] = Field(title="http header", default={})
+    params: Union[dict, None] = Field(title="http parameter", default={})
     timeout: int = Field(title="http request timeout", default=5)
     body_template_json_path: Union[str, None] = Field(
         title="if given, replace body with file path content", default=None
     )
-    body: Union[dict, str] = Field(title="http body", default={})
+    body: Union[dict, str, None] = Field(title="http body", default={})
     elapsed_milliseconds: float = Field(
         title="http request elapsed milliseconds", default=None
     )
@@ -51,10 +51,10 @@ class BaseTestStep(BaseModel):
     process_methods_prefix: str = Field(
         title="process method import prefix", default=None
     )
-    pre_process_method: Union[str, None] = Field(
+    pre_process_method: Union[str, list, None] = Field(
         title="process method call before send http", default=None
     )
-    after_process_method: Union[str, None] = Field(
+    after_process_method: Union[str, list, None] = Field(
         title="process method call after send http", default=None
     )
     fail_msg: str = Field(title="error", default=None)
@@ -126,31 +126,65 @@ class BaseTestStep(BaseModel):
         except Exception as e:
             self._exception_handle(e, res)
 
+    def _invoke_pre_process_method(
+        self, cls: "BasePipLineTest", http_res_dict: dict = {}
+    ):
+        if self.pre_process_method is not None:
+            if isinstance(self.pre_process_method, list):
+                for x in self.pre_process_method:
+                    pre_process_method = import_lib(self.process_methods_prefix + x)
+                    pre_process_method(
+                        test_class=cls, test_step=self, http_res_dict=http_res_dict
+                    )
+            else:
+                pre_process_method = import_lib(
+                    self.process_methods_prefix + self.pre_process_method
+                )
+                pre_process_method(
+                    test_class=cls, test_step=self, http_res_dict=http_res_dict
+                )
+
+    def _invoke_after_process_method(
+        self, cls: "BasePipLineTest", http_res_dict: dict = {}
+    ):
+        if self.after_process_method is not None:
+            if isinstance(self.after_process_method, list):
+                for x in self.after_process_method:
+                    after_process_method = import_lib(self.process_methods_prefix + x)
+                    after_process_method(
+                        test_class=cls, test_step=self, http_res_dict=http_res_dict
+                    )
+            else:
+                after_process_method = import_lib(
+                    self.process_methods_prefix + self.after_process_method
+                )
+                after_process_method(
+                    test_class=cls, test_step=self, http_res_dict=http_res_dict
+                )
+        else:
+            self.body = http_res_dict
+
     def execute(self, cls: "BasePipLineTest"):
         # use cls logger
         # cls.getLogger().debug(self.dict())
-        if self.pre_process_method is not None:
-            pre_process_method = import_lib(
-                self.process_methods_prefix + self.pre_process_method
-            )
-            if self.body_template_json_path:
-                self._read_http_body()
-            pre_process_method(test_class=cls, test_step=self, http_res_dict={})
 
+        # read http body json template file
+        if self.body_template_json_path:
+            self._read_http_body()
+
+        # execute pre_process_method
+        self._invoke_pre_process_method(cls=cls, http_res_dict={})
+
+        # format url str path. convert `{var}` to actual value.
         self._format_url(cls)
+
+        # send http request
         res = self._send_request_data(cls)
 
-        if self.after_process_method is not None:
-            after_process_method = import_lib(
-                self.process_methods_prefix + self.after_process_method
-            )
-            after_process_method(
-                test_class=cls,
-                test_step=self,
-                http_res_dict=self._process_http_res(res),
-            )
-        else:
-            self.body = self._process_http_res(res)
+        # execute after_process_method
+        self._invoke_after_process_method(
+            cls=cls, http_res_dict=self._process_http_res(res)
+        )
 
 
 class BasePipLineTest(BaseModel):
@@ -226,10 +260,13 @@ class BasePipLineTest(BaseModel):
                     "test_steps_list item must be instance of BasePipLineTest|BasePipLineTest!"
                 )
 
-    def execute(self, http_headers={}, http_body={}, http_params={}):
-        headers = http_headers
-        body = http_body
-        params = http_params
+    def execute(self, http_headers=None, http_body=None, http_params=None):
+        """
+        invoke all `test step` in `test_steps_list`
+        """
+        headers = {} if http_headers is None else http_headers
+        body = {} if http_body is None else http_body
+        params = {} if http_params is None else http_params
         for _ in range(self.total_execute_round):
             self._execute(headers, body, params)
         # self.getLogger().debug(self.dict())

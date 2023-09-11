@@ -6,13 +6,12 @@ from piplinetest import BasePipLineTest, BaseTestStep
 class TestPiplineTest(object):
     def test_pipline_test(self):
         class HttpTestStep(BaseTestStep):
-            description: str = "test"
-            url: str = "/api/test"
-            method: str = "POST"
-            headers: dict = {}
+            description = "test"
+            url = "/api/test"
+            method = "POST"
 
         class HttpPiplineTest(BasePipLineTest):
-            description: str = "test"
+            description = "test"
             test_steps_list: List[HttpTestStep] = [
                 HttpTestStep,
             ]
@@ -29,10 +28,9 @@ class TestPiplineTest(object):
 
     def test_pipline_test_with_body(self):
         class HttpTestStep(BaseTestStep):
-            description: str = "test"
-            url: str = "/api/test"
-            method: str = "POST"
-            headers: dict = {}
+            description = "test"
+            url = "/api/test"
+            method = "POST"
             body_template_json_path: str = "data_templates/case_store.json"
             process_methods_prefix = "tests.process_methods."
 
@@ -49,10 +47,9 @@ class TestPiplineTest(object):
 
     def test_pipline_test_total_test_round(self):
         class HttpTestStep(BaseTestStep):
-            description: str = "test"
-            url: str = "/api/test"
-            method: str = "POST"
-            headers: dict = {}
+            description = "test"
+            url = "/api/test"
+            method = "POST"
             body_template_json_path: str = "data_templates/case_store.json"
             process_methods_prefix = "tests.process_methods."
 

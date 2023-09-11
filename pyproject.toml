@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "piplinetest"
-version = "0.8.1"
+version = "0.8.2"
 description = ""
 authors = ["gui <changdi.gui@gmail.com>"]
 readme = "README.md"
