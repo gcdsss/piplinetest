@@ -2,8 +2,10 @@ import re
 import traceback
 import csv
 import time
+import threading
+import multiprocessing
 from logging import getLogger, Logger
-from typing import Union, List, Any
+from typing import Union, List, Any, Optional
 from enum import Enum
 from json import load
 from pathlib import Path
@@ -19,6 +21,11 @@ from .log import setup_logger
 logger = setup_logger()
 
 
+class LockType(str, Enum):
+    thread = "thread"
+    process = "process"
+
+
 class TestStepTypeEnum(Enum):
     http_api = "http_api"
     ui = "ui"
@@ -32,6 +39,7 @@ class BaseTestStep(BaseModel):
     """
 
     url_format_pattern: str = r"{(.*?)}"
+    lock_type: Optional[LockType] = Field(title="lock type", default=None)
 
     name: str = Field(title="test step name", default=None)
     url: str = Field(title="http api url")
